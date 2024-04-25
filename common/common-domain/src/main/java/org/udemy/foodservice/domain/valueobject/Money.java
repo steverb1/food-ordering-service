@@ -7,7 +7,9 @@ import java.util.Objects;
 public class Money {
     private final BigDecimal amount;
 
-    public boolean IsGreaterThanZero() {
+    public static final Money ZERO = new Money(BigDecimal.ZERO);
+
+    public boolean isGreaterThanZero() {
         return amount != null && amount.compareTo(BigDecimal.ZERO) > 0;
     }
 
