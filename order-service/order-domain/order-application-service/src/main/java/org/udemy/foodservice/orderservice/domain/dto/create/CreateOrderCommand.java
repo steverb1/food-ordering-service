@@ -3,7 +3,6 @@ package org.udemy.foodservice.orderservice.domain.dto.create;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import org.udemy.foodservice.orderservice.domain.entity.OrderItem;
 
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
