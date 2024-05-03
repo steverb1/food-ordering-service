@@ -12,7 +12,7 @@ import org.udemy.foodservice.orderservice.domain.ports.input.messagelistener.res
 public class RestaurantApprovalResponseMessageListener implements ForRestaurantApprovalResponseMessages {
     @Override
     public void orderApproved(RestaurantApprovalResponse restaurantApprovalResponse) {
-        
+
     }
 
     @Override
