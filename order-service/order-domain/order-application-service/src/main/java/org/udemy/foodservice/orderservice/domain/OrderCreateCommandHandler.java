@@ -2,7 +2,6 @@ package org.udemy.foodservice.orderservice.domain;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 import org.udemy.foodservice.orderservice.domain.dto.create.CreateOrderCommand;
 import org.udemy.foodservice.orderservice.domain.dto.create.CreateOrderResponse;
 import org.udemy.foodservice.orderservice.domain.event.OrderCreatedEvent;

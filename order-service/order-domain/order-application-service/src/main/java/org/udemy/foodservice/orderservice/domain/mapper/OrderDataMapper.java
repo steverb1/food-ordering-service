@@ -8,6 +8,7 @@ import org.udemy.foodservice.domain.valueobject.RestaurantId;
 import org.udemy.foodservice.orderservice.domain.dto.create.CreateOrderCommand;
 import org.udemy.foodservice.orderservice.domain.dto.create.CreateOrderResponse;
 import org.udemy.foodservice.orderservice.domain.dto.create.OrderAddress;
+import org.udemy.foodservice.orderservice.domain.dto.track.TrackOrderResponse;
 import org.udemy.foodservice.orderservice.domain.entity.Order;
 import org.udemy.foodservice.orderservice.domain.entity.OrderItem;
 import org.udemy.foodservice.orderservice.domain.entity.Product;
@@ -43,6 +44,14 @@ public class OrderDataMapper {
         return CreateOrderResponse.builder()
                 .orderTrackingId(order.getRestaurantId().getValue())
                 .orderStatus(order.getOrderStatus())
+                .build();
+    }
+
+    public TrackOrderResponse orderToTrackOrderResponse(Order order) {
+        return TrackOrderResponse.builder()
+                .orderTrackingId(order.getTrackingId().getValue())
+                .orderStatus(order.getOrderStatus())
+                .failureMessages(order.getFailureMessages())
                 .build();
     }
 
