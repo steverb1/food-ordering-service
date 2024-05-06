@@ -9,7 +9,6 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <groupId>org.udemy.foodservice</groupId>
     <artifactId>order-service</artifactId>
     <packaging>pom</packaging>
     <modules>

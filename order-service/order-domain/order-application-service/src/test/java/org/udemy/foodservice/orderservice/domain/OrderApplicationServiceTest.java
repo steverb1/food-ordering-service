@@ -1,12 +1,13 @@
 package org.udemy.foodservice.orderservice.domain;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import org.mockito.internal.matchers.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.udemy.foodservice.domain.valueobject.*;
 import org.udemy.foodservice.orderservice.domain.dto.create.CreateOrderCommand;
+import org.udemy.foodservice.orderservice.domain.dto.create.CreateOrderResponse;
 import org.udemy.foodservice.orderservice.domain.dto.create.OrderAddress;
 import org.udemy.foodservice.orderservice.domain.dto.create.OrderItem;
 import org.udemy.foodservice.orderservice.domain.entity.Customer;
@@ -24,6 +25,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -142,5 +144,13 @@ public class OrderApplicationServiceTest {
         when(restaurantRepository.findRestaurant(orderDataMapper.createOrderCommandToRestaurant(createOrderCommand)))
                 .thenReturn(Optional.of(restaurantResponse));
         when(orderRepository.save(any(Order.class))).thenReturn(order);
+    }
+
+    @Test
+    public void testCreateOrder() {
+        CreateOrderResponse createOrderResponse = orderApplicationService.createOrder(createOrderCommand);
+        assertEquals(OrderStatus.PENDING, createOrderResponse.getOrderStatus());
+        assertEquals("Order created successfully", createOrderResponse.getMessage());
+        assertNotNull(createOrderResponse.getOrderTrackingId());
     }
 }

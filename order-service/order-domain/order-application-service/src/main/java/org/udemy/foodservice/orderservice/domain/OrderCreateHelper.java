@@ -10,7 +10,6 @@ import org.udemy.foodservice.orderservice.domain.entity.Restaurant;
 import org.udemy.foodservice.orderservice.domain.event.OrderCreatedEvent;
 import org.udemy.foodservice.orderservice.domain.exception.OrderDomainException;
 import org.udemy.foodservice.orderservice.domain.mapper.OrderDataMapper;
-import org.udemy.foodservice.orderservice.domain.ports.input.service.ForServicingOrders;
 import org.udemy.foodservice.orderservice.domain.ports.output.repository.ForSavingCustomers;
 import org.udemy.foodservice.orderservice.domain.ports.output.repository.ForSavingOrders;
 import org.udemy.foodservice.orderservice.domain.ports.output.repository.ForSavingRestaurants;
@@ -21,13 +20,13 @@ import java.util.UUID;
 @Slf4j
 @Component
 public class OrderCreateHelper {
-    private final OrderDomainService orderDomainService;
+    private final ForProcessingOrders orderDomainService;
     private final ForSavingOrders orderRepository;
     private final ForSavingCustomers customerRepository;
     private final ForSavingRestaurants restaurantRepository;
     private final OrderDataMapper orderDataMapper;
 
-    public OrderCreateHelper(OrderDomainService orderDomainService,
+    public OrderCreateHelper(ForProcessingOrders orderDomainService,
                              ForSavingOrders orderRepository,
                              ForSavingCustomers customerRepository,
                              ForSavingRestaurants restaurantRepository,

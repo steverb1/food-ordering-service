@@ -10,7 +10,7 @@ import org.udemy.foodservice.orderservice.domain.ports.output.repository.ForSavi
 import org.udemy.foodservice.orderservice.domain.ports.output.repository.ForSavingOrders;
 import org.udemy.foodservice.orderservice.domain.ports.output.repository.ForSavingRestaurants;
 
-@SpringBootApplication(scanBasePackages = "com.food.ordering.system")
+@SpringBootApplication(scanBasePackages = "org.udemy.foodservice")
 public class OrderTestConfiguration {
     @Bean
     public ForPublishingOrderCreatedPaymentRequest orderCreatedPaymentRequestMessagePublisher() {
