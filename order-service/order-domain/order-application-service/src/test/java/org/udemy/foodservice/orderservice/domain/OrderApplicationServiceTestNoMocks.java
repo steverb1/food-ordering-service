@@ -27,9 +27,11 @@ public class OrderApplicationServiceTestNoMocks {
         OrderDataMapper orderDataMapper = new OrderDataMapper();
         OrderCreateHelper orderCreateHelper = new OrderCreateHelper(orderDomainService, orderRepository, customerRepository, restaurantRepository, orderDataMapper);
         ForPublishingOrderCreatedPaymentRequest orderCreatedPaymentRequestMessagePublisher = null;
-        OrderCreateCommandHandler ordercreateCommandHandler = new OrderCreateCommandHandler(orderCreateHelper, orderDataMapper, orderCreatedPaymentRequestMessagePublisher);
-        OrderTrackCommandHandler orderTrackCommandHandler = new OrderTrackCommandHandler(orderDataMapper, orderRepository);
-        OrderApplicationService service = new OrderApplicationService(ordercreateCommandHandler, orderTrackCommandHandler);
+        OrderApplicationService service = new OrderApplicationService(
+                orderCreateHelper,
+                orderDataMapper,
+                orderCreatedPaymentRequestMessagePublisher,
+                orderRepository);
 
         UUID customerId = UUID.randomUUID();
         UUID restaurantId = UUID.randomUUID();
