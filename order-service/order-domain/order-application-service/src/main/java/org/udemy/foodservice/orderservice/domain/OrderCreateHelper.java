@@ -3,7 +3,6 @@ package org.udemy.foodservice.orderservice.domain;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.udemy.foodservice.orderservice.domain.dto.create.CreateOrderCommand;
 import org.udemy.foodservice.orderservice.domain.entity.Customer;
 import org.udemy.foodservice.orderservice.domain.entity.Order;
 import org.udemy.foodservice.orderservice.domain.entity.Restaurant;
@@ -39,23 +38,22 @@ public class OrderCreateHelper {
     }
 
     @Transactional
-    public OrderCreatedEvent persistOrder(CreateOrderCommand createOrderCommand) {
-        checkCustomer(createOrderCommand.getCustomerId());
-        Restaurant restaurant = checkRestaurant(createOrderCommand);
-        Order order = orderDataMapper.createOrderCommandToOrder(createOrderCommand);
+    public OrderCreatedEvent persistOrder(Order order) {
+        checkCustomer(order.getCustomerId().getValue());
+        Restaurant restaurant = checkRestaurant(order);
         OrderCreatedEvent orderCreatedEvent = orderDomainService.validateAndInitiateOrder(order, restaurant);
         saveOrder(order);
         log.info("Order is created with id: {}", orderCreatedEvent.getOrder().getId().getValue());
         return orderCreatedEvent;
     }
 
-    private Restaurant checkRestaurant(CreateOrderCommand createOrderCommand) {
-        Restaurant restaurant = orderDataMapper.createOrderCommandToRestaurant(createOrderCommand);
+    private Restaurant checkRestaurant(Order order) {
+        Restaurant restaurant = orderDataMapper.createOrderCommandToRestaurant(order);
         Optional<Restaurant> optionalRestaurant = restaurantRepository.findRestaurant(restaurant);
         if (optionalRestaurant.isEmpty()) {
-            log.warn("Could not find restaurant with restaurant id: {}", createOrderCommand.getRestaurantId());
+            log.warn("Could not find restaurant with restaurant id: {}", order.getRestaurantId());
             throw new OrderDomainException("Could not find restaurant with restaurant id: " +
-                    createOrderCommand.getRestaurantId());
+                    order.getRestaurantId());
         }
         return optionalRestaurant.get();
     }

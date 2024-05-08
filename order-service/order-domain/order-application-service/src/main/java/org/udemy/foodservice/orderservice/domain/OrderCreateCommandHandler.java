@@ -2,8 +2,8 @@ package org.udemy.foodservice.orderservice.domain;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import org.udemy.foodservice.orderservice.domain.dto.create.CreateOrderCommand;
 import org.udemy.foodservice.orderservice.domain.dto.create.CreateOrderResponse;
+import org.udemy.foodservice.orderservice.domain.entity.Order;
 import org.udemy.foodservice.orderservice.domain.event.OrderCreatedEvent;
 import org.udemy.foodservice.orderservice.domain.mapper.OrderDataMapper;
 import org.udemy.foodservice.orderservice.domain.ports.output.messagepublisher.payment.ForPublishingOrderCreatedPaymentRequest;
@@ -24,8 +24,8 @@ public class OrderCreateCommandHandler {
         this.orderCreatedPaymentRequestMessagePublisher = orderCreatedPaymentRequestMessagePublisher;
     }
 
-    public CreateOrderResponse createOrder(CreateOrderCommand createOrderCommand) {
-        OrderCreatedEvent orderCreatedEvent = orderCreateHelper.persistOrder(createOrderCommand);
+    public CreateOrderResponse createOrder(Order order) {
+        OrderCreatedEvent orderCreatedEvent = orderCreateHelper.persistOrder(order);
         log.info("Order is created with id: {}", orderCreatedEvent.getOrder().getId().getValue());
         orderCreatedPaymentRequestMessagePublisher.publish(orderCreatedEvent);
         return orderDataMapper.orderToCreateOrderResponse(orderCreatedEvent.getOrder(), "Order created successfully");
