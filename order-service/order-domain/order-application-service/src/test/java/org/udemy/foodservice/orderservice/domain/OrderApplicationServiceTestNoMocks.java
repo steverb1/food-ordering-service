@@ -1,43 +1,56 @@
 package org.udemy.foodservice.orderservice.domain;
 
-import org.udemy.foodservice.domain.valueobject.CustomerId;
-import org.udemy.foodservice.domain.valueobject.Money;
-import org.udemy.foodservice.domain.valueobject.ProductId;
-import org.udemy.foodservice.domain.valueobject.RestaurantId;
+import org.junit.jupiter.api.Test;
+import org.udemy.foodservice.domain.valueobject.*;
 import org.udemy.foodservice.orderservice.domain.dto.create.CreateOrderResponse;
+import org.udemy.foodservice.orderservice.domain.entity.Customer;
 import org.udemy.foodservice.orderservice.domain.entity.Order;
 import org.udemy.foodservice.orderservice.domain.entity.Product;
+import org.udemy.foodservice.orderservice.domain.entity.Restaurant;
 import org.udemy.foodservice.orderservice.domain.mapper.OrderDataMapper;
 import org.udemy.foodservice.orderservice.domain.ports.output.messagepublisher.payment.ForPublishingOrderCreatedPaymentRequest;
-import org.udemy.foodservice.orderservice.domain.ports.output.repository.ForSavingCustomers;
-import org.udemy.foodservice.orderservice.domain.ports.output.repository.ForSavingOrders;
-import org.udemy.foodservice.orderservice.domain.ports.output.repository.ForSavingRestaurants;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 public class OrderApplicationServiceTestNoMocks {
-    //@Test
+    @Test
     void test() {
         ForProcessingOrders orderDomainService = new OrderDomainService();
-        ForSavingOrders orderRepository = null;
-        ForSavingCustomers customerRepository = null;
-        ForSavingRestaurants restaurantRepository = null;
+        OrderRepositoryFake orderRepository = new OrderRepositoryFake();
         OrderDataMapper orderDataMapper = new OrderDataMapper();
+
+        UUID customerId = UUID.randomUUID();
+        UUID restaurantId = UUID.randomUUID();
+        UUID productId = UUID.randomUUID();
+
+        Customer customer = new Customer();
+        customer.setId(new CustomerId(customerId));
+        CustomerRepositoryFake customerRepository = new CustomerRepositoryFake();
+        customerRepository.setCustomer(customer);
+
+        Restaurant restaurant = Restaurant.builder()
+                .restaurantId(new RestaurantId(restaurantId))
+                .products(List.of(new Product(new ProductId(productId), "product-1", new Money(new BigDecimal("50.00"))),
+                        new Product(new ProductId(productId), "product-2", new Money(new BigDecimal("50.00")))))
+                .active(true)
+                .build();
+        RestaurantRepositoryFake restaurantRepository = new RestaurantRepositoryFake();
+        restaurantRepository.setRestaurant(restaurant);
+
         OrderCreateHelper orderCreateHelper = new OrderCreateHelper(orderDomainService, orderRepository, customerRepository, restaurantRepository, orderDataMapper);
-        ForPublishingOrderCreatedPaymentRequest orderCreatedPaymentRequestMessagePublisher = null;
+        ForPublishingOrderCreatedPaymentRequest orderCreatedPaymentRequestMessagePublisher = new OrderCreatedPaymentRequestMessagePublisherFake();
         OrderApplicationService service = new OrderApplicationService(
                 orderCreateHelper,
                 orderDataMapper,
                 orderCreatedPaymentRequestMessagePublisher,
                 orderRepository);
 
-        UUID customerId = UUID.randomUUID();
-        UUID restaurantId = UUID.randomUUID();
-        UUID productId = UUID.randomUUID();
-
-        BigDecimal price = new BigDecimal(50);
+        BigDecimal price = new BigDecimal("200.00");
 
         Order order = Order.builder()
                 .customerId(new CustomerId(customerId))
@@ -56,6 +69,10 @@ public class OrderApplicationServiceTestNoMocks {
                                 .subTotal(new Money(new BigDecimal("150.00")))
                                 .build()))
                 .build();
+
         CreateOrderResponse createOrderResponse = service.createOrder(order);
+        assertEquals(OrderStatus.PENDING, createOrderResponse.getOrderStatus());
+        assertEquals("Order created successfully", createOrderResponse.getMessage());
+        assertNotNull(createOrderResponse.getOrderTrackingId());
     }
 }

@@ -53,7 +53,7 @@ public class OrderApplicationServiceTest {
         Customer customer = new Customer();
         customer.setId(new CustomerId(CUSTOMER_ID));
 
-        Restaurant restaurantResponse = Restaurant.builder()
+        Restaurant restaurant = Restaurant.builder()
                 .restaurantId(new RestaurantId(RESTAURANT_ID))
                 .products(List.of(new Product(new ProductId(PRODUCT_ID), "product-1", new Money(new BigDecimal("50.00"))),
                         new Product(new ProductId(PRODUCT_ID), "product-2", new Money(new BigDecimal("50.00")))))
@@ -80,10 +80,8 @@ public class OrderApplicationServiceTest {
         order.setId(new OrderId(ORDER_ID));
 
         when(customerRepository.findCustomer(CUSTOMER_ID)).thenReturn(Optional.of(customer));
-        when(restaurantRepository.findRestaurant(Restaurant.builder()
-                        .restaurantId(new RestaurantId(RESTAURANT_ID))
-                .build()))
-                .thenReturn(Optional.of(restaurantResponse));
+        when(restaurantRepository.findRestaurant(RESTAURANT_ID))
+                .thenReturn(Optional.of(restaurant));
         when(orderRepository.save(any(Order.class))).thenReturn(order);
     }
 
@@ -187,7 +185,7 @@ public class OrderApplicationServiceTest {
                         new Product(new ProductId(PRODUCT_ID), "product-2", new Money(new BigDecimal("50.00")))))
                 .active(false)
                 .build();
-        when(restaurantRepository.findRestaurant(orderDataMapper.createOrderCommandToRestaurant(order)))
+        when(restaurantRepository.findRestaurant(RESTAURANT_ID))
                 .thenReturn(Optional.of(restaurantResponse));
         OrderDomainException orderDomainException = assertThrows(OrderDomainException.class,
                 () -> orderApplicationService.createOrder(order));
