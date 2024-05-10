@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class OrderApplicationServiceTestNoMocks {
     @Test
-    void test() {
+    void createOrderPersistsOrderCorrectly() {
         ForProcessingOrders orderDomainService = new OrderDomainService();
         OrderRepositoryFake orderRepository = new OrderRepositoryFake();
         OrderDataMapper orderDataMapper = new OrderDataMapper();
